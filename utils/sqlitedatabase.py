@@ -3,7 +3,7 @@ import asyncio
 
 class Database:
     def __init__(self):
-        self.db = sqlite3.connect('CCRP Bot.db')
+        self.db = sqlite3.connect('config/CCRP Bot.db')
         self.cursor = self.db.cursor()
 
     def execute(self, sql, values: tuple = None, fetch: bool = False, commit: bool = False):
