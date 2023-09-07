@@ -1,5 +1,6 @@
 import sqlite3
 import asyncio
+import random, string
 
 class Database:
     def __init__(self):
@@ -26,7 +27,7 @@ class Database:
                 fivem = "N/A"
             elif evidence is None:
                 evidence = "N/A"
-            query = "INSERT INTO Bans (`Discord ID`, `Steam Hex`, `FiveM`, `Evidence`, `Reason`, `Banned By`, `Ban Duration`,`Ban Date`, `Banned User`) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)"
+            query = "INSERT INTO `FiveM Bans` (`Discord ID`, `Steam Hex`, `FiveM`, `Evidence`, `Reason`, `Banned By`, `Ban Duration`,`Ban Date`, `Banned User`) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)"
 
             self.db.execute(query, (discord_id, steam_hex, fivem, evidence, reason, banned_by, duration, ban_date, banned_user))
             self.db.commit()
@@ -42,8 +43,8 @@ class Database:
         for column in columns:
             try:
                 search_value = f"%{identifier}%"
-                print(f"Executing query: SELECT * FROM Bans WHERE `{str(column)}` LIKE ?")
-                self.cursor.execute(f"SELECT * FROM Bans WHERE `{str(column)}` LIKE ?", (search_value,))
+                print(f"Executing query: SELECT * FROM `FiveM Bans` WHERE `{str(column)}` LIKE ?")
+                self.cursor.execute(f"SELECT * FROM `FiveM Bans` WHERE `{str(column)}` LIKE ?", (search_value,))
                 
                 match = self.cursor.fetchall()
                 if match:
@@ -54,7 +55,7 @@ class Database:
             except Exception as e:
                 print(f"Error executing query: {e}")
 
-        total_ban_count = len(ban_records)  # Count of unique bans
+        total_ban_count = len(ban_records)  # Count of unique `FiveM Bans`
         return matches, total_ban_count
 
     def addWarn(self, discord_id: str, steam_hex, fivem: str,reason: str, evidence: str, warned_by: str, warn_date: str, warned_user: str):
@@ -67,7 +68,7 @@ class Database:
                 fivem = "N/A"
             elif evidence is None:
                 evidence = "N/A"
-            query = "INSERT INTO Warns (`Discord ID`, `Steam Hex`, `FiveM`, `Evidence`, `Reason`, `Warned By`,`Warn Date`, `Warned User`) VALUES (?, ?, ?, ?, ?, ?, ?, ?)"
+            query = "INSERT INTO `FiveM Warns` (`Discord ID`, `Steam Hex`, `FiveM`, `Evidence`, `Reason`, `Warned By`,`Warn Date`, `Warned User`) VALUES (?, ?, ?, ?, ?, ?, ?, ?)"
 
             self.db.execute(query, (discord_id, steam_hex, fivem, evidence, reason, warned_by, warn_date, warned_user))
             self.db.commit()
@@ -84,8 +85,8 @@ class Database:
         for column in columns:
             try:
                 search_value = f"%{identifier}%"
-                print(f"Executing query: SELECT * FROM Warns WHERE `{str(column)}` LIKE ?")
-                self.cursor.execute(f"SELECT * FROM Warns WHERE `{str(column)}` LIKE ?", (search_value,))
+                print(f"Executing query: SELECT * FROM `FiveM Warns` WHERE `{str(column)}` LIKE ?")
+                self.cursor.execute(f"SELECT * FROM `FiveM Warns` WHERE `{str(column)}` LIKE ?", (search_value,))
                 match = self.cursor.fetchall()
                 if match:
                     print(f"Match found: {match}")
@@ -95,7 +96,7 @@ class Database:
             except Exception as e:
                 print(f"Error executing query: {e}")
 
-        total_warn_count = len(warn_records)  # Count of unique Warns
+        total_warn_count = len(warn_records)  # Count of unique `FiveM Warns`
         return matches, total_warn_count
 
     def findNote(self, identifier: str):
@@ -106,8 +107,8 @@ class Database:
         for column in columns:
             try:
                 search_value = f"%{identifier}%"
-                print(f"Executing query: SELECT * FROM Notes WHERE `{str(column)}` LIKE ?")
-                self.cursor.execute(f"SELECT * FROM Notes WHERE `{str(column)}` LIKE ?", (search_value,))
+                print(f"Executing query: SELECT * FROM `FiveM Notes` WHERE `{str(column)}` LIKE ?")
+                self.cursor.execute(f"SELECT * FROM `FiveM Notes` WHERE `{str(column)}` LIKE ?", (search_value,))
                 match = self.cursor.fetchall()
                 if match:
                     print(f"Match found: {match}")
@@ -117,7 +118,7 @@ class Database:
             except Exception as e:
                 print(f"Error executing query: {e}")
 
-        total_note_count = len(note_records)  # Count of unique notes
+        total_note_count = len(note_records)  # Count of unique `FiveM Notes`
         return matches, total_note_count
 
 
@@ -135,9 +136,9 @@ class Database:
                 steam_hex = "N/A"
             elif fivem is None:
                 fivem = "N/A"
-            query = "INSERT INTO Notes (`Discord ID`, `Steam Hex`, `FiveM`, `Notes`, `Note By`, `Note Date`, `Noted User`, `Unique Key`) VALUES (?, ?, ?, ?, ?, ?, ?, ?)"
+            query = "INSERT INTO `FiveM Notes` (`Discord ID`, `Steam Hex`, `FiveM`, `Notes`, `Note By`, `Note Date`, `Noted User`, `Unique Key`) VALUES (?, ?, ?, ?, ?, ?, ?, ?)"
 
-            self.db.execute(query, (discord_id, steam_hex, fivem, note, note_by, note_date, note_name, BIRPDatabase.randID(self)))
+            self.db.execute(query, (discord_id, steam_hex, fivem, note, note_by, note_date, note_name, Database.randID(self)))
             self.db.commit()
             return True
         except Exception as e:
@@ -145,9 +146,16 @@ class Database:
 
     def delNote(self, note_id: str):
         try:
-            query = f"DELETE FROM notes WHERE `Unique Key` = '{note_id}';"
+            query = f"DELETE FROM `FiveM Notes` WHERE `Unique Key` = '{note_id}';"
             self.cursor.execute(query)
             self.db.commit()
             return True, None
         except Exception as e:
             return False, e
+    def randID(self):
+        for _ in range(5):
+            # Generate a random ID using alphanumeric characters
+            id = ''.join(random.choices(string.ascii_letters + string.digits, k=10))
+            return id
+    def _del_(self):
+        self.db.close()

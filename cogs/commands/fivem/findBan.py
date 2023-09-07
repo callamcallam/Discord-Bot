@@ -85,7 +85,7 @@ class findBan(commands.Cog):
     )
     async def _find(self, interaction: nextcord.Interaction, identifier: str = nextcord.SlashOption(name="identifier", description="Enter an identifier (Discord ID, Steam Hex, or FiveM ID).", required=True)):
         """Find a ban using an identifier."""
-        if nextcord.utils.get(interaction.guild.roles, id=int(self.db.execute(sql="SELECT `support_role` FROM `Ticket System`;")[0][0])) in interaction.user.roles:
+        if nextcord.utils.get(interaction.guild.roles, id=int(self.db.staffRole())) in interaction.user.roles:
             await interaction.response.defer()
 
             database = Database()

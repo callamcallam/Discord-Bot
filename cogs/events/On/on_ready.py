@@ -32,6 +32,8 @@ class OnReady(commands.Cog):
     async def on_ready(self):
         await self.bot.wait_until_ready()
         await self.change_status()
+        # commands = [command[:-3] for command in os.listdir("cogs/commands/fivem") if command.endswith(".py")]
+        # await self.bot.sync_application_commands(data=commands,guild_id=1092591199300370473)
         # commands = [command for command in os.listdir("cogs/commands") if command.endswith(".py")]
         # events = [event for event in os.listdir("cogs/events") if event.endswith(".py")]
 
