@@ -12,9 +12,12 @@ class OnError(commands.Cog):
         if isinstance(error, application_checks.ApplicationMissingPermissions):
             missing_permissions = ", ".join(error.missing_permissions)
             await interaction.response.send_message(f"You do not have the required permissions to run this command. Missing permissions: `{missing_permissions}`")
+
+        elif isinstance(error, application_checks.ApplicationBotMissingPermissions):
+            missing_permissions = ", ".join(error.missing_permissions)
+            await interaction.response.send_message(f"I do not have the required permissions to run this command. Missing permissions: `{missing_permissions}`")
         else:
             await interaction.response.send_message(f"An error occurred: {error}")
-
 
 
 def setup(bot: commands.Bot):
