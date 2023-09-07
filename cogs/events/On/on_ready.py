@@ -3,7 +3,7 @@ from nextcord.ext import commands
 from utils.sqlitedatabase import Database
 from utils.webhook import Webhook
 # from cogs.commands.tickets import TicketSystemCloseButton, TicketSystemButtons, TicketSystemLockConfirmationButtons, TicketSystemDropDown, TicketSystemCloseConfirmation
-
+from cogs.commands.tickets.start_ticket_system import OpenTicketDropDown, TicketControlButtons, OpenTicketOpenButton
 
 class OnReady(commands.Cog):
     def __init__(self, bot: commands.Bot):
@@ -14,7 +14,10 @@ class OnReady(commands.Cog):
     async def change_status(self):
         await self.bot.wait_until_ready()
         # views = [TicketSystemButtons(), TicketSystemLockConfirmationButtons(), TicketSystemCloseButton(), TicketSystemDropDown(), TicketSystemCloseConfirmation()]
-        # for view in views: self.bot.add_view(view)
+        self.bot.add_view(OpenTicketOpenButton())
+        self.bot.add_view(TicketControlButtons())
+        self.bot.add_view(OpenTicketDropDown())
+        
         activity_type = self.db.execute(sql="SELECT status_type FROM Config;", fetch=True)[0][0]
         status = self.db.execute(sql="SELECT status FROM Config;", fetch=True)[0][0]
 

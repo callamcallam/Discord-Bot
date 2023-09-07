@@ -76,7 +76,6 @@ class Database:
         except Exception as e:
             return False, e
 
-
     def findWarn(self, identifier: str):
         columns = ['Warned User', 'Discord ID', 'Steam Hex', 'FiveM']
 
@@ -121,7 +120,6 @@ class Database:
         total_note_count = len(note_records)  # Count of unique `FiveM Notes`
         return matches, total_note_count
 
-
     def staffRole(self):
 
         id = self.cursor.execute("SELECT `Staff Team ID` FROM Config;").fetchone()
@@ -152,10 +150,12 @@ class Database:
             return True, None
         except Exception as e:
             return False, e
+    
     def randID(self):
         for _ in range(5):
             # Generate a random ID using alphanumeric characters
             id = ''.join(random.choices(string.ascii_letters + string.digits, k=10))
             return id
+        
     def _del_(self):
         self.db.close()
