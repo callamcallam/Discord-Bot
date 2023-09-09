@@ -16,8 +16,8 @@ class LockedTicketButtons(nextcord.ui.View): # Locked ticket buttons
         staff_role = nextcord.utils.get(i.guild.roles,id=self.db.staffRole())
         if staff_role not in i.user.roles: return await i.response.send_message("You are not a staff member", ephemeral=True)
         try: 
-            check = [x for x in self.db.execute(sql="SELECT channel_id FROM `Open Tickets`; ", fetch=True)][0]
-            if i.channel.id not in check: return await i.response.send_message(f"This isn't a ticket...")
+            check = int(self.db.execute(sql="SELECT `channel_id` FROM `Open Tickets` WHERE `channel_id` = (?)", values=(i.channel.id,), fetch=True)[0][0])
+            if i.channel.id != check: return await i.response.send_message(f"This isn't a ticket...")
         except Exception as e:
             await i.response.send_message(f"Error: {e}")
         support_role = self.db.staffRole()
@@ -55,8 +55,8 @@ class TicketControlButtons(nextcord.ui.View): # Ticket control buttons
         staff_role = nextcord.utils.get(i.guild.roles,id=self.db.staffRole())
         if staff_role not in i.user.roles: return await i.response.send_message("You are not a staff member", ephemeral=True)
         try:
-            check = [x for x in self.db.execute(sql="SELECT channel_id FROM `Open Tickets`; ", fetch=True)][0]
-            if i.channel.id not in check: return await i.response.send_message(f"This isn't a ticket...")
+            check = int(self.db.execute(sql="SELECT `channel_id` FROM `Open Tickets` WHERE `channel_id` = (?)", values=(i.channel.id,), fetch=True)[0][0])
+            if i.channel.id != check: return await i.response.send_message(f"This isn't a ticket...")
         except Exception as e:
             await i.response.send_message(f"Error: {e}")
         support_role = self.db.staffRole()

@@ -1,25 +1,19 @@
-import nextcord, os, time, requests, sys
+import nextcord, os, time, requests, sys, zipfile
 from colorama import Fore
 from nextcord.ext import commands
 from utils.sqlitedatabase import Database
 
-
-
 version = "1.0.0"
 
 def check_for_updates():
-    url = "https://raw.githubusercontent.com/Caleem1212/Central-City-RP/version.txt"
+    url = "https://raw.githubusercontent.com/callamcallam/Discord-Bot/main/version.txt"
     r = requests.get(url)
     if r.status_code == 200:
-        if r.text != version:
+        if str(r.text.lower()) != version:
             print("Update found! Version: " + r.text + "")
-            print("Updating...")
-            with open("version.txt", "w") as f:
-                f.write(r.text)
-            print("Update complete!")
-            print("Restarting...")
-            os.system("python bot.py")
-            sys.exit()
+            print(f"Please head to my github to download the latest version! https://github.com/callamcallam/Discord-Bot")
+            time.sleep(60)
+            sys.exit(0)
         else:
             print("No update found!")
 
@@ -27,7 +21,7 @@ db = Database()
 bot = commands.Bot(command_prefix=db.execute("SELECT command_prefix FROM `Config`;", fetch=True)[0][0], intents=nextcord.Intents.all(), case_insensitive=False, help_command=None)
 
 print("Checking for updates... Please wait.")
-check_for_updates()
+# check_for_updates()
 time.sleep(5)
 os.system("cls")
 banner = f"""
