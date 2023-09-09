@@ -9,11 +9,34 @@ class LockedTicketButtons(nextcord.ui.View): # Locked ticket buttons
     def __init__(self):
         super().__init__(timeout=None)
         self.db = Database()
-        self.staff_role = self.db.staffRole()
+        #self.staff_role = nextcord.utils.get(i.guild.roles,id=self.db.staffRole())
     
     @nextcord.ui.button(label="Unlock", style=nextcord.ButtonStyle.blurple, custom_id="unlock_ticket", emoji="🔓")
     async def unlock_ticket(self, button: nextcord.ui.Button, i: nextcord.Interaction):
-        ...
+        staff_role = nextcord.utils.get(i.guild.roles,id=self.db.staffRole())
+        if staff_role not in i.user.roles: return await i.response.send_message("You are not a staff member", ephemeral=True)
+        try: 
+            check = [x for x in self.db.execute(sql="SELECT channel_id FROM `Open Tickets`; ", fetch=True)][0]
+            if i.channel.id not in check: return await i.response.send_message(f"This isn't a ticket...")
+        except Exception as e:
+            await i.response.send_message(f"Error: {e}")
+        support_role = self.db.staffRole()
+        user = nextcord.utils.get(i.guild.members, id=self.db.execute(sql="SELECT `user-id` FROM `Open Tickets` WHERE `channel_id` = (?)", values=(i.channel.id,), fetch=True)[0][0])
+        permissions = {
+                i.guild.default_role: nextcord.PermissionOverwrite(read_messages=False),
+                i.guild.me: nextcord.PermissionOverwrite(read_messages=True),
+                support_role: nextcord.PermissionOverwrite(read_messages=True),
+                i.user: nextcord.PermissionOverwrite(read_messages=True),
+        }
+        await i.channel.edit(permissions=permissions)
+        embed = nextcord.Embed(
+            title="Ticket Unlocked!",
+            description=f"This ticket has been unlocked by {i.user.mention}",
+            color=nextcord.Color.green(),
+            timestamp=i.message.created_at
+        )
+        embed.set_footer(text="CCRP | Ticket System")
+        await i.response.send_message(embed=embed, ephemeral=False, view=TicketControlButtons())
     
     @nextcord.ui.button(label="Transcript", style=nextcord.ButtonStyle.green, custom_id="transcript", emoji="📜")
     async def transcript(self, button: nextcord.ui.Button, i: nextcord.Interaction):
@@ -29,7 +52,7 @@ class TicketControlButtons(nextcord.ui.View): # Ticket control buttons
     
     @nextcord.ui.button(label="Lock", style=nextcord.ButtonStyle.blurple, custom_id="lock_ticket", emoji="🔒")
     async def lock_ticket(self, button: nextcord.ui.Button, i: nextcord.Interaction):
-        staff_role = self.db.staffRole()
+        staff_role = nextcord.utils.get(i.guild.roles,id=self.db.staffRole())
         if staff_role not in i.user.roles: return await i.response.send_message("You are not a staff member", ephemeral=True)
         try:
             check = [x for x in self.db.execute(sql="SELECT channel_id FROM `Open Tickets`; ", fetch=True)][0]
@@ -59,7 +82,7 @@ class TicketControlButtons(nextcord.ui.View): # Ticket control buttons
     @nextcord.ui.button(label="Claim", style=nextcord.ButtonStyle.green, custom_id="claim_ticket", emoji="🛄")
     #@application_checks.has_role(int(staff_role))
     async def claim_ticket(self, button: nextcord.ui.Button,i: nextcord.Interaction):
-        staff_role = self.db.staffRole()
+        staff_role = nextcord.utils.get(i.guild.roles,id=self.db.staffRole())
         if staff_role not in i.user.roles: return await i.response.send_message("You are not a staff member", ephemeral=True)
         user_id = self.db.execute(sql="SELECT `user-id` FROM `Open Tickets` WHERE `channel_id` = (?)", values=(i.channel.id,), fetch=True)[0][0]
         user = nextcord.utils.get(i.guild.members, id=user_id)
@@ -71,7 +94,7 @@ class TicketControlButtons(nextcord.ui.View): # Ticket control buttons
     
     @nextcord.ui.button(label="Close", style=nextcord.ButtonStyle.red, custom_id="close_ticket", emoji="🔒")
     async def close_ticket(self, button: nextcord.ui.Button, i: nextcord.Interaction):
-        staff_role = self.db.staffRole()
+        staff_role = nextcord.utils.get(i.guild.roles,id=self.db.staffRole())
         if staff_role not in i.user.roles: return await i.response.send_message("You are not a staff member", ephemeral=True)
         user_id = self.db.execute(sql="SELECT `user-id` FROM `Open Tickets` WHERE `channel_id` = (?)", values=(i.channel.id,), fetch=True)[0][0]
         user = nextcord.utils.get(i.guild.members, id=user_id)

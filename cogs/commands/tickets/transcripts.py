@@ -29,7 +29,7 @@ class Transcript(commands.Cog):
             
             channel = interaction.channel
             text_log = await channel.history(limit=None).flatten()
-            with open(f"transcripts/{i.}{interaction.channel.id}.html", "w", encoding='utf-8-sig', errors="ignore") as f:
+            with open(f"transcripts/{interaction.guild.id}{interaction.channel.id}.html", "w", encoding='utf-8-sig', errors="ignore") as f:
                 f.write('<html>\n')
                 f.write('<head>\n')
                 f.write('<style>\n')

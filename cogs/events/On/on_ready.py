@@ -1,4 +1,5 @@
 import nextcord, datetime, os
+from colorama import Fore
 from nextcord.ext import commands
 from utils.sqlitedatabase import Database
 from utils.webhook import Webhook
@@ -41,10 +42,10 @@ class OnReady(commands.Cog):
         # events = [event for event in os.listdir("cogs/events") if event.endswith(".py")]
 
         print(f"{self.bot.user.name} is ready!")
-        print(f"Bot ID: {self.bot.user.id}")
-        print(f"Bot prefix: {self.db.execute(sql='SELECT command_prefix FROM Config;', fetch=True)[0][0]}")
-        print(f"Bot status: {self.db.execute(sql='SELECT status FROM Config;', fetch=True)[0][0]}")
-        print(f"Bot status type: {self.db.execute(sql='SELECT status_type FROM Config;', fetch=True)[0][0]}")
+        print(f"{Fore.WHITE}Bot ID{Fore.RED}: {Fore.LIGHTRED_EX}{self.bot.user.id}")
+        print(f"{Fore.WHITE}Bot prefix{Fore.RED}: {Fore.LIGHTRED_EX}{self.db.execute(sql='SELECT command_prefix FROM Config;', fetch=True)[0][0]}")
+        print(f"{Fore.WHITE}Bot status{Fore.RED}: {Fore.LIGHTRED_EX}{self.db.execute(sql='SELECT status FROM Config;', fetch=True)[0][0]}")
+        print(f"{Fore.WHITE}Bot status type{Fore.RED}: {Fore.LIGHTRED_EX}{self.db.execute(sql='SELECT status_type FROM Config;', fetch=True)[0][0]}")
         embed = nextcord.Embed(
             title=f"{str(self.bot.user.name)} | Bot Started",
             description=f"""

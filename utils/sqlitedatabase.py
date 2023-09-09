@@ -124,7 +124,7 @@ class Database:
 
         id = self.cursor.execute("SELECT `Staff Team ID` FROM Config;").fetchone()
         id = id[0]
-        return id
+        return int(id)
 
     def addNote(self, note_name: str,discord_id: str, steam_hex, fivem: str, note: str, note_by: str, note_date):
         try:
