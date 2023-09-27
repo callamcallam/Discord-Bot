@@ -23,6 +23,16 @@ class SetTickets(commands.Cog):
             else:
                 await i.response.send_message("Ticket System is already disabled", ephemeral=True)
     
+    @tickets.subcommand(name="ticket-channel", description="Channel where the ticket will be opened.")
+    @application_checks.has_permissions(manage_guild=True)
+    async def ticket_channel(self, i: nextcord.Interaction, channel: nextcord.TextChannel = None):
+        if self.db.execute(sql="SELECT `ticket_system` FROM `Ticket System`;", fetch=True)[0][0] == 0:
+            return await i.response.send_message("Ticket System Disabled. Please enable it first.", ephemeral=True)
+        if self.db.execute(sql="SELECT `ticket_channel` FROM `Ticket System`;", fetch=True)[0][0] == channel.id:
+            return await i.response.send_message("This is already the ticket channel.", ephemeral=True)
+        self.db.execute(sql="UPDATE `Ticket System` SET `ticket_channel` = ?;", values=(channel.id,), commit=True)
+        return await i.response.send_message(f"Ticket Channel Set to: {channel.mention}", ephemeral=True)
+        
     @tickets.subcommand(name="general-support-setup", description="Setup general support tickets")
     @application_checks.has_permissions(manage_guild=True)
     async def general(self, i: nextcord.Interaction, option: str = nextcord.SlashOption(name="options", choices=["Support Catergory", "Welcome Message", "Claim Message", "Close Message"], required=True), category: nextcord.CategoryChannel= None, welcome: str = None, claim: str= None, close: str= None):

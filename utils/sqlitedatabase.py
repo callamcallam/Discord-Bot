@@ -1,5 +1,6 @@
 import sqlite3
 import asyncio
+import uuid
 import random, string
 
 class Database:
@@ -159,3 +160,10 @@ class Database:
         
     def _del_(self):
         self.db.close()
+        
+        
+
+
+
+
+        
