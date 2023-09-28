@@ -3,6 +3,7 @@ from nextcord import SlashOption
 from nextcord.ext import commands
 from utils.sqlitedatabase import Database
 from nextcord.ext import application_checks
+
 class SetConfig(commands.Cog):
     def __init__(self, bot: commands.Bot):
         self.bot = bot

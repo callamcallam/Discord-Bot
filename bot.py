@@ -3,7 +3,7 @@ from colorama import Fore
 from nextcord.ext import commands
 from utils.sqlitedatabase import Database
 
-version = "1.0.0"
+version = "1.0.1"
 
 def check_for_updates():
     url = "https://raw.githubusercontent.com/callamcallam/Discord-Bot/main/version.txt"
@@ -43,7 +43,7 @@ print(banner)
 cmds = 0
 events = 0
 os.system(f"title Central City RP - Commands [{cmds}] - Events [{events}]")
-time.sleep(2)
+# time.sleep(2)
 
 for folder in os.listdir("cogs"):
     for subfolder in os.listdir(f"cogs/{folder}"):
